@@ -13,6 +13,7 @@ router.post('/:email/:password/:phone_number', async (req, res) => {
 
     res.json(user);
   } catch (e) {
+    res.status(400);
     res.json({ error: e.toString() });
   }
 });
@@ -27,6 +28,7 @@ router.get('/:email/:password', async (req, res) => {
 
     res.json(user);
   } catch (e) {
+    res.status(400);
     res.json({ error: e.toString() });
   }
 });

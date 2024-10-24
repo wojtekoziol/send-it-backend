@@ -47,9 +47,9 @@ function encryptPassword(email, password) {
 
 async function register(email, password, phoneNumber) {
   if (await emailAlreadyInUse(email)) {
-    return { error: 'Email already in use' };
+    throw Error('Email already in use');
   } else if (await phoneNumberAlreadyInUse(phoneNumber)) {
-    return { error: 'Phone number already in use' };
+    throw Error('Phone number already in use');
   }
 
   const sql = `
@@ -63,7 +63,7 @@ async function register(email, password, phoneNumber) {
 
 async function login(email, password) {
   if (!(await emailAlreadyInUse(email))) {
-    return { error: 'No user with this email' };
+    throw Error('No user with this email');
   }
 
   const sql = `
@@ -74,7 +74,7 @@ async function login(email, password) {
   const encryptedPassword = encryptPassword(email, password);
   const rows = await select(sql, [email, encryptedPassword]);
 
-  if (rows.length != 1) return { error: 'Access denied' };
+  if (rows.length != 1) throw Error('Access denied');
   const { id } = rows[0];
   return await getUser(id);
 }
