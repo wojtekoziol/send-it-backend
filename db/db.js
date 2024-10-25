@@ -45,6 +45,19 @@ async function select(sql, params) {
   });
 }
 
+// Return last Id
+async function update(sql, params) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function (err, rows) {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(this.lastID);
+    });
+  });
+}
+
 function createUsersTable(db) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users(
@@ -81,9 +94,11 @@ function createPackagesTable(db) {
       status INTEGER NOT NULL,     
       courier_id INTEGER, 
       pickup_code INTEGER NOT NULL,
+      receiver_id INTEGER,
       FOREIGN KEY(sender_id) REFERENCES users(id), 
       FOREIGN KEY(street_id) REFERENCES streets(id),      
-      FOREIGN KEY(courier_id) REFERENCES couriers(id)
+      FOREIGN KEY(courier_id) REFERENCES couriers(id),
+      FOREIGN KEY(receiver_id) REFERENCES users(id)
     );
   `);
 }
@@ -91,4 +106,5 @@ function createPackagesTable(db) {
 module.exports = {
   insert,
   select,
+  update,
 };
