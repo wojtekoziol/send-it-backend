@@ -6,21 +6,21 @@ function generatePickupCode() {
 
 async function getReceiverIdForEmail(receiverEmail) {
   const sql = `
-    SELECT id FROM users
+    SELECT * FROM users
     WHERE email = ?;
   `;
   const rows = await select(sql, [receiverEmail]);
-  const receiverId = rows.length == 0 ? null : rows[0];
+  const receiverId = rows.length == 0 ? null : rows[0]['id'];
   return receiverId;
 }
 
 async function getCourierIdForStreet(streetId) {
   const sql = `
-    SELECT courier_id FROM streets
+    SELECT * FROM streets
     WHERE id = ?;
   `;
   const rows = await select(sql, [streetId]);
-  const courierId = rows.length == 0 ? null : rows[0];
+  const courierId = rows.length == 0 ? null : rows[0]['courier_id'];
   return courierId;
 }
 

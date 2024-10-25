@@ -74,7 +74,7 @@ function createStreetsTable(db) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS streets(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL UNIQUE,
       courier_id INTEGER, 
       FOREIGN KEY(courier_id) REFERENCES users(id)      
     );
