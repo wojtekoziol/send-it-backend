@@ -16,4 +16,16 @@ router.post('/:name', async (req, res) => {
   }
 });
 
+// Get all streets
+router.get('/', async (req, res) => {
+  try {
+    const streets = await controller.getAllStreets();
+
+    res.json(streets);
+  } catch (e) {
+    res.status(400);
+    res.json({ error: e.toString() });
+  }
+});
+
 module.exports = router;

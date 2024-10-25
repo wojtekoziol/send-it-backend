@@ -35,6 +35,16 @@ async function addStreet(name) {
   return street;
 }
 
+async function getAllStreets() {
+  const sql = `
+    SELECT * FROM streets
+  `;
+
+  const streets = await select(sql, []);
+  return streets;
+}
+
 module.exports = {
   addStreet,
+  getAllStreets,
 };
