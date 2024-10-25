@@ -8,7 +8,10 @@ async function getUser(id) {
   `;
   const userList = await select(sql, [id]);
   const user = userList[0];
+
   delete user.password;
+  user['is_courier'] = user['is_courier'] == 1;
+
   return user;
 }
 
@@ -45,7 +48,7 @@ function encryptPassword(email, password) {
   return encrypted;
 }
 
-async function register(email, password, phoneNumber) {
+async function register(email, password, phoneNumber, isCourier) {
   if (await emailAlreadyInUse(email)) {
     throw Error('Email already in use');
   } else if (await phoneNumberAlreadyInUse(phoneNumber)) {
@@ -53,11 +56,16 @@ async function register(email, password, phoneNumber) {
   }
 
   const sql = `
-    INSERT INTO users (email, phone_number, password)
-    VALUES (?, ?, ?);
+    INSERT INTO users (email, phone_number, password, is_courier)
+    VALUES (?, ?, ?, ?);
   `;
   var encryptedPassword = encryptPassword(email, password);
-  const id = await insert(sql, [email, phoneNumber, encryptedPassword]);
+  const id = await insert(sql, [
+    email,
+    phoneNumber,
+    encryptedPassword,
+    isCourier,
+  ]);
   return await getUser(id);
 }
 

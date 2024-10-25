@@ -3,13 +3,19 @@ const router = express.Router();
 const controller = require('../controllers/auth');
 
 // Register
-router.post('/:email/:password/:phone_number', async (req, res) => {
+router.post('/:email/:password/:phone_number/:is_courier', async (req, res) => {
   try {
     const email = req.params['email'];
     const password = req.params['password'];
     const phoneNumber = req.params['phone_number'];
+    const isCourier = req.params['is_courier'] == 'true' ? 1 : 0;
 
-    const user = await controller.register(email, password, phoneNumber);
+    const user = await controller.register(
+      email,
+      password,
+      phoneNumber,
+      isCourier
+    );
 
     res.json(user);
   } catch (e) {

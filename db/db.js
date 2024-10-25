@@ -10,7 +10,6 @@ function getDB() {
     }
 
     createUsersTable(db);
-    createCouriersTable(db);
     createStreetsTable(db);
     createPackagesTable(db);
 
@@ -52,17 +51,8 @@ function createUsersTable(db) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email VARCHAR(319) NOT NULL UNIQUE,
       phone_number VARCHAR(9) NOT NULL,
-      password VARCHAR(255) NOT NULL
-    );
-  `);
-}
-
-function createCouriersTable(db) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS couriers(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL UNIQUE
+      password VARCHAR(255) NOT NULL,
+      is_courier INTEGER DEFAULT 0 NOT NULL
     );
   `);
 }
@@ -73,7 +63,7 @@ function createStreetsTable(db) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
       courier_id INTEGER, 
-      FOREIGN KEY(courier_id) REFERENCES couriers(id)      
+      FOREIGN KEY(courier_id) REFERENCES users(id)      
     );
   `);
 }
