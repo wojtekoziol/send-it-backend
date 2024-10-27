@@ -4,13 +4,13 @@ const controller = require('../controllers/package');
 
 // Add package
 router.post(
-  '/:sender_id/:receiver_first_name/:receiver_last_name/:receiver_email/:street_id/:weight/:max_size',
+  '/:sender_id/:receiver_first_name/:receiver_last_name/:receiver_phone/:street_id/:weight/:max_size',
   async (req, res) => {
     try {
       const senderId = req.params['sender_id'];
       const receiverFirstName = req.params['receiver_first_name'];
       const receiverLastName = req.params['receiver_last_name'];
-      const receiverEmail = req.params['receiver_email'];
+      const receiverPhone = req.params['receiver_phone'];
       const streetId = req.params['street_id'];
       const weight = req.params['weight'];
       const maxSize = req.params['max_size'];
@@ -19,14 +19,16 @@ router.post(
         senderId,
         receiverFirstName,
         receiverLastName,
-        receiverEmail,
+        receiverPhone,
         streetId,
         weight,
         maxSize
       );
 
-      return package;
+      res.json(package);
     } catch (e) {
+      console.log(e.toString());
+
       res.status(400);
       res.json({ error: e.toString() });
     }
@@ -42,6 +44,8 @@ router.get('/:user_id', async (req, res) => {
 
     res.json(packages);
   } catch (e) {
+    console.log(e.toString());
+
     res.status(400);
     res.json({ error: e.toString() });
   }
@@ -56,6 +60,8 @@ router.get('/courier/:user_id', async (req, res) => {
 
     res.json(packages);
   } catch (e) {
+    console.log(e.toString());
+
     res.status(400);
     res.json({ error: e.toString() });
   }
@@ -71,6 +77,8 @@ router.patch('/:package_id/:status', async (req, res) => {
 
     res.json(package);
   } catch (e) {
+    console.log(e.toString());
+
     res.status(400);
     res.json({ error: e.toString() });
   }

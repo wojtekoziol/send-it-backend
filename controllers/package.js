@@ -4,12 +4,12 @@ function generatePickupCode() {
   return Math.floor(Math.random() * 9000) + 1000;
 }
 
-async function getReceiverIdForEmail(receiverEmail) {
+async function getReceiverIdForPhone(receiverPhone) {
   const sql = `
     SELECT * FROM users
-    WHERE email = ?;
+    WHERE phone_number = ?;
   `;
-  const rows = await select(sql, [receiverEmail]);
+  const rows = await select(sql, [receiverPhone]);
   const receiverId = rows.length == 0 ? null : rows[0]['id'];
   return receiverId;
 }
@@ -39,17 +39,17 @@ async function addPackage(
   senderId,
   receiverFirstName,
   receiverLastName,
-  receiverEmail,
+  receiverPhone,
   streetId,
   weight,
   maxSize
 ) {
   const sql = `
-    INSERT INTO packages (sender_id, receiver_first_name, receiver_last_name, receiver_id, street_id, weight, max_size, courier_id, pickup_code)
+    INSERT INTO packages (sender_id, receiver_first_name, receiver_last_name, receiver_id, street_id, weight, max_size, courier_id, pickup_code, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  const receiverId = await getReceiverIdForEmail(receiverEmail);
+  const receiverId = await getReceiverIdForPhone(receiverPhone);
   const courierId = await getCourierIdForStreet(streetId);
   if (courierId == null) throw Error('There is no courier for this street');
 
@@ -63,6 +63,7 @@ async function addPackage(
     maxSize,
     courierId,
     generatePickupCode(),
+    0,
   ]);
 
   const package = await getPackage(packageId);
@@ -72,10 +73,10 @@ async function addPackage(
 async function getUserPackages(userId) {
   const sql = `
     SELECT * FROM packages
-    WHERE receiver_id = ?;
+    WHERE receiver_id = ? OR sender_id = ?;
   `;
 
-  const packages = await select(sql, [userId]);
+  const packages = await select(sql, [userId, userId]);
   return packages;
 }
 

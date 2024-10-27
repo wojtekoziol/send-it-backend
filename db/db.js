@@ -81,18 +81,19 @@ function createStreetsTable(db) {
   `);
 }
 
+// status: 0 - utworzona, 1 - w transporcie, 2 - punkt odbioru, 3 - dostarczona
 function createPackagesTable(db) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS packages(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       receiver_first_name VARCHAR(255) NOT NULL,
       receiver_last_name VARCHAR(255) NOT NULL,
-      street_id INTEGER, 
-      sender_id INTEGER, 
-      weight INTEGER NOT NULL,
-      max_size INTEGER NOT NULL,
+      street_id INTEGER NOT NULL, 
+      sender_id INTEGER NOT NULL, 
+      weight REAL NOT NULL,
+      max_size REAL NOT NULL,
       status INTEGER NOT NULL,     
-      courier_id INTEGER, 
+      courier_id INTEGER NOT NULL, 
       pickup_code INTEGER NOT NULL,
       receiver_id INTEGER,
       FOREIGN KEY(sender_id) REFERENCES users(id), 
