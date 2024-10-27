@@ -19,6 +19,7 @@ router.post('/:email/:password/:phone_number/:is_courier', async (req, res) => {
 
     res.json(user);
   } catch (e) {
+    console.log(e.toString());
     res.status(400);
     res.json({ error: e.toString() });
   }
@@ -34,6 +35,22 @@ router.get('/:email/:password', async (req, res) => {
 
     res.json(user);
   } catch (e) {
+    console.log(e.toString());
+    res.status(400);
+    res.json({ error: e.toString() });
+  }
+});
+
+// Get user
+router.get('/:id', async (req, res) => {
+  try {
+    const id = req.params['id'];
+
+    const user = await controller.getUser(id);
+
+    res.json(user);
+  } catch (e) {
+    console.log(e.toString());
     res.status(400);
     res.json({ error: e.toString() });
   }
