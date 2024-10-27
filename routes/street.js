@@ -28,4 +28,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get street for id
+router.get('/:id', async (req, res) => {
+  try {
+    const id = req.params['id'];
+
+    const street = await controller.getStreet(id);
+
+    res.json(street);
+  } catch (e) {
+    res.status(400);
+    res.json({ error: e.toString() });
+  }
+});
+
 module.exports = router;

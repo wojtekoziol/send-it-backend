@@ -47,4 +47,5 @@ async function getAllStreets() {
 module.exports = {
   addStreet,
   getAllStreets,
+  getStreet,
 };

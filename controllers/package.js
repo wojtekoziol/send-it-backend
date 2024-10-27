@@ -83,7 +83,7 @@ async function getUserPackages(userId) {
 async function getCourierPackages(userId) {
   const sql = `
     SELECT * FROM packages
-    WHERE courier_id = ?;
+    WHERE status != 3 AND courier_id = ?;
   `;
 
   const packages = await select(sql, [userId]);
