@@ -68,12 +68,17 @@ router.get('/courier/:user_id', async (req, res) => {
 });
 
 // Change package status
-router.patch('/:package_id/:status', async (req, res) => {
+router.patch('/:package_id/:status/:pickup_code', async (req, res) => {
   try {
     const packageId = req.params['package_id'];
     const status = req.params['status'];
+    const pickupCode = req.params['pickup_code'];
 
-    const package = await controller.changePackageStatus(packageId, status);
+    const package = await controller.changePackageStatus(
+      packageId,
+      status,
+      pickupCode
+    );
 
     res.json(package);
   } catch (e) {

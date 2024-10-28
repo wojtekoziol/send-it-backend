@@ -90,14 +90,23 @@ async function getCourierPackages(userId) {
   return packages;
 }
 
-async function changePackageStatus(packageId, status) {
-  const sql = `
+async function changePackageStatus(packageId, status, pickupCode) {
+  if (pickupCode == null) {
+    const sql = `
     UPDATE packages
     SET status = ?
     WHERE id = ?;
   `;
+    await update(sql, [status, packageId]);
+  } else {
+    const sql = `
+      UPDATE packages
+      SET status = ?
+      WHERE id = ? AND pickup_code = ?;
+    `;
+    await update(sql, [status, packageId, pickupCode]);
+  }
 
-  await update(sql, [status, packageId]);
   const package = await getPackage(packageId);
   return package;
 }
