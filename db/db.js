@@ -89,6 +89,8 @@ function createPackagesTable(db) {
       receiver_first_name VARCHAR(255) NOT NULL,
       receiver_last_name VARCHAR(255) NOT NULL,
       street_id INTEGER NOT NULL, 
+      street_no INTEGER NOT NULL,
+      apartment_no INTEGER,
       sender_id INTEGER NOT NULL, 
       weight REAL NOT NULL,
       max_size REAL NOT NULL,

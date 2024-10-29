@@ -41,12 +41,14 @@ async function addPackage(
   receiverLastName,
   receiverPhone,
   streetId,
+  streetNo,
+  apartmentNo,
   weight,
   maxSize
 ) {
   const sql = `
-    INSERT INTO packages (sender_id, receiver_first_name, receiver_last_name, receiver_id, street_id, weight, max_size, courier_id, pickup_code, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO packages (sender_id, receiver_first_name, receiver_last_name, receiver_id, street_id, street_no, apartment_no, weight, max_size, courier_id, pickup_code, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const receiverId = await getReceiverIdForPhone(receiverPhone);
@@ -59,6 +61,8 @@ async function addPackage(
     receiverLastName,
     receiverId,
     streetId,
+    streetNo,
+    apartmentNo,
     weight,
     maxSize,
     courierId,
@@ -91,7 +95,7 @@ async function getCourierPackages(userId) {
 }
 
 async function changePackageStatus(packageId, status, pickupCode) {
-  if (pickupCode == null) {
+  if (pickupCode == 'null') {
     const sql = `
     UPDATE packages
     SET status = ?
