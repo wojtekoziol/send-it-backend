@@ -72,17 +72,48 @@ router.get('/courier/:user_id', async (req, res) => {
 });
 
 // Change package status
-router.patch('/:package_id/:status/:pickup_code', async (req, res) => {
+router.patch('/:package_id/:status/', async (req, res) => {
   try {
     const packageId = req.params['package_id'];
     const status = req.params['status'];
-    console.log(status);
-    const pickupCode = req.params['pickup_code'];
-    console.log(pickupCode);
 
-    const package = await controller.changePackageStatus(
+    const package = await controller.changePackageStatus(packageId, status);
+
+    res.json(package);
+  } catch (e) {
+    console.log(e.toString());
+    res.status(400);
+    res.json({ error: e.toString() });
+  }
+});
+
+// To pickup point
+router.patch('/pickup/:package_id/:pickup_point_id', async (req, res) => {
+  try {
+    const packageId = req.params['package_id'];
+    const pickupPointId = req.params['pickup_point_id'];
+
+    const package = await controller.changePackageStatusToPickupPoint(
       packageId,
-      status,
+      pickupPointId
+    );
+
+    res.json(package);
+  } catch (e) {
+    console.log(e.toString());
+    res.status(400);
+    res.json({ error: e.toString() });
+  }
+});
+
+// Deliver
+router.patch('/deliver/:package_id/:pickup_code', async (req, res) => {
+  try {
+    const packageId = req.params['package_id'];
+    const pickupCode = req.params['pickup_code'];
+
+    const package = await controller.changePackageStatusToDelivered(
+      packageId,
       pickupCode
     );
 

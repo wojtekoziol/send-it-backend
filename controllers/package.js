@@ -24,6 +24,16 @@ async function getCourierIdForStreet(streetId) {
   return courierId;
 }
 
+async function isCourier(userId) {
+  const sql = `
+    SELECT * FROM users
+    WHERE id = ?;
+  `;
+  const rows = await select(sql, [userId]);
+  const isCourier = rows.length == 0 ? false : rows[0]['is_courier'];
+  return isCourier;
+}
+
 async function getPackage(packageId) {
   const sql = `
     SELECT * FROM packages
@@ -94,22 +104,42 @@ async function getCourierPackages(userId) {
   return packages;
 }
 
-async function changePackageStatus(packageId, status, pickupCode) {
-  if (pickupCode == 'null') {
-    const sql = `
+async function changePackageStatus(packageId, status) {
+  const sql = `
     UPDATE packages
     SET status = ?
     WHERE id = ?;
   `;
-    await update(sql, [status, packageId]);
-  } else {
-    const sql = `
-      UPDATE packages
-      SET status = ?
-      WHERE id = ? AND pickup_code = ?;
-    `;
-    await update(sql, [status, packageId, pickupCode]);
+  await update(sql, [status, packageId]);
+
+  const package = await getPackage(packageId);
+  return package;
+}
+
+async function changePackageStatusToPickupPoint(packageId, pickupPointId) {
+  const isValid = await isCourier(pickupPointId);
+  if (!isValid) {
+    throw Error('Invalid pickup point id');
   }
+
+  const sql = `
+    UPDATE packages
+    SET status = 2, courier_id = ?
+    WHERE id = ?;
+  `;
+  await update(sql, [pickupPointId, packageId]);
+
+  const package = await getPackage(packageId);
+  return package;
+}
+
+async function changePackageStatusToDelivered(packageId, pickupCode) {
+  const sql = `
+    UPDATE packages
+    SET status = 3
+    WHERE id = ? AND pickup_code = ?;
+  `;
+  await update(sql, [packageId, pickupCode]);
 
   const package = await getPackage(packageId);
   return package;
@@ -118,6 +148,8 @@ async function changePackageStatus(packageId, status, pickupCode) {
 module.exports = {
   addPackage,
   changePackageStatus,
+  changePackageStatusToDelivered,
+  changePackageStatusToPickupPoint,
   getUserPackages,
   getCourierPackages,
 };
